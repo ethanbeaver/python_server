@@ -255,11 +255,15 @@ def job_posting(conn, job_postings=None):
     job_postings = job_postings or list(gen_job_posting())
 
     try:
-        conn.execute("INSERT INTO jobforms (id, job_name, job_description, visibility, owner, image) VALUES (1, 'ASWWU Generic', \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
+        conn.execute("INSERT INTO jobforms (id, job_name, job_description,\
+            visibility, owner, image) VALUES (1, 'ASWWU Generic',\
+            \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
         conn.execute(JOB_POSTING_TABLE.insert(), job_postings)
     except IntegrityError:
         conn.execute(JOB_POSTING_TABLE.delete())
-        conn.execute("INSERT INTO jobforms (id, job_name, job_description, visibility, owner, image) VALUES (1, 'ASWWU Generic', \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
+        conn.execute("INSERT INTO jobforms (id, job_name, job_description,\
+            visibility, owner, image) VALUES (1, 'ASWWU Generic',\
+            \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
         conn.execute(JOB_POSTING_TABLE.insert(), job_postings)
     yield job_postings
     conn.execute(JOB_POSTING_TABLE.delete())
@@ -293,13 +297,15 @@ def job_question(conn, job_questions=None):
     try:
         for i in xrange(1, 18):
             if i not in [8, 9]:
-                conn.execute("INSERT INTO jobquestions (id, question, jobID) VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
+                conn.execute("INSERT INTO jobquestions (id, question, jobID)\
+                    VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
         conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
     except IntegrityError:
         conn.execute(JOB_QUESTION_TABLE.delete())
         for i in xrange(1, 18):
             if i not in [8, 9]:
-                conn.execute("INSERT INTO jobquestions (id, question, jobID) VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
+                conn.execute("INSERT INTO jobquestions (id, question, jobID)\
+                    VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
         conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
     yield job_questions
     conn.execute(JOB_QUESTION_TABLE.delete())

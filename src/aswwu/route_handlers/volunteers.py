@@ -72,8 +72,9 @@ class VolunteerRoleHandler(BaseHandler):
                 volunteers = alchemy.people_db.query(volunteer_model.Volunteer)
                 args = {}
                 for role in self.request.arguments:
-                    if hasattr(volunteer_model.Volunteer, role) and self.get_argument(role, '') != ''\
-                            and role not in ['music', 'languages']:
+                    if hasattr(volunteer_model.Volunteer, role) and\
+                            self.get_argument(role, '') != '' and\
+                            role not in ['music', 'languages']:
                         args[role] = True
                 volunteers = volunteers.filter_by(**args)
                 if self.get_argument('music', '') != '':
