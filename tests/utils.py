@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, MetaData, String, Table, Integer, ForeignKey
+from sqlalchemy.exc import IntegrityError
 
 from names import get_first_name, get_last_name
 
@@ -36,7 +37,7 @@ JOB_POSTING_TABLE = Table('jobforms', METADATA,
 JOB_QUESTION_TABLE = Table('jobquestions', METADATA,
     Column('id', Integer(), nullable=False),
     Column('question', String(5000)),
-    Column('jobID',String(50), ForeignKey('jobforms.id'))
+    Column('jobID', String(50), ForeignKey('jobforms.id'))
 )
 
 JOB_APPLICATION_TABLE = Table('jobapplications', METADATA,
@@ -145,8 +146,8 @@ def askanthingvote(conn, askanythingvotes=None):
     conn.execute(ASKANYTHING_VOTE_TABLE.delete())
 
 
-def gen_job_app(number=5):
-    for i in xrange(2,number+2):
+def gen_job_posting(number=5):
+    for i in xrange(2, number + 2):
         yield {
             "id": i,
             "job_name": "Job number {}".format(i),
@@ -157,59 +158,108 @@ def gen_job_app(number=5):
             "image": "/images/{}".format(i)
         }
 
+
 def gen_job_answer(number_answers_per_app=5, num_apps=5):
-    for i in xrange(1, number_answers_per_app*num_apps+2):
+    for i in xrange(1, number_answers_per_app * num_apps + 2):
         yield {
             "id": i,
             "question": "Question Number {}".format(i),
-            "jobID": i%(num_apps)+1
+            "jobID": i % (num_apps) + 1
         }
 
-def gen_job_posting(number=5):
-    for i in xrange(2,number+2):
+
+def gen_job_app(number=5):
+    for i in xrange(2, number + 2):
         yield {
             "id": i,
             "jobID": "Job number {}".format(i),
             "username": get_first_name() + '.' + get_last_name(),
-            "status": ["new", "reviewed", "hire", "no"][i%4]
+            "status": ["new", "reviewed", "hire", "no"][i % 4]
         }
 
+
 def gen_job_question(number_questions_per_posting=5, num_postings=5):
-    for i in xrange(1, number_questions_per_posting*num_postings+2):
+    for i in xrange(18, number_questions_per_posting * num_postings + 18):
         yield {
             "id": i,
             "question": "Question Number {}".format(i),
-            "jobID": i%(num_postings)+1
+            "jobID": i % (num_postings) + 2
         }
+
 
 @contextmanager
 def job_application(conn, job_apps=None):
     job_apps = job_apps or list(gen_job_app())
 
-    conn.execute(JOB_APPLICATION_TABLE.insert(), job_apps)
+    try:
+        conn.execute(JOB_APPLICATION_TABLE.insert(), job_apps)
+    except IntegrityError:
+        conn.execute(JOB_APPLICATION_TABLE.delete())
+        conn.execute(JOB_APPLICATION_TABLE.insert(), job_apps)
     yield job_apps
     conn.execute(JOB_APPLICATION_TABLE.delete())
+
 
 @contextmanager
 def job_answer(conn, job_answers=None):
     job_answers = job_answers or list(gen_job_answer())
 
-    conn.execute(JOB_ANSWER_TABLE.insert(), job_answers)
+    try:
+        conn.execute(JOB_ANSWER_TABLE.insert(), job_answers)
+    except IntegrityError:
+        conn.execute(JOB_ANSWER_TABLE.delete())
+        conn.execute(JOB_ANSWER_TABLE.insert(), job_answers)
     yield job_answers
     conn.execute(JOB_ANSWER_TABLE.delete())
+
 
 @contextmanager
 def job_posting(conn, job_postings=None):
     job_postings = job_postings or list(gen_job_posting())
 
-    conn.execute(JOB_POSTING_TABLE.insert(), job_postings)
+    try:
+        conn.execute("INSERT INTO jobforms (id, job_name, job_description, visibility, owner, image) VALUES (1, 'ASWWU Generic', \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
+        conn.execute(JOB_POSTING_TABLE.insert(), job_postings)
+    except IntegrityError:
+        conn.execute(JOB_POSTING_TABLE.delete())
+        conn.execute("INSERT INTO jobforms (id, job_name, job_description, visibility, owner, image) VALUES (1, 'ASWWU Generic', \"Doesn't Really Matter\", 0, 'ryan.rabello', '')")
+        conn.execute(JOB_POSTING_TABLE.insert(), job_postings)
     yield job_postings
     conn.execute(JOB_POSTING_TABLE.delete())
+
 
 @contextmanager
 def job_question(conn, job_questions=None):
     job_questions = job_questions or list(gen_job_question())
-
-    conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
+    questions = [
+        "First Name",
+        "Last Name",
+        "WWU ID#",
+        "Phone Number",
+        "E-mail",
+        "On-Campus Address",
+        "High-School Attended",
+        "",
+        "",
+        "Current SM/ ACA?",
+        "If so, where?",
+        "On average, how many credits will you be taking?",
+        "How many hours do you hope to work?",
+        "Have you worked for ASWWU before? If so, what job?",
+        "What other jobs or responsibilities will require your attention/ time?",
+        "Why do you want to work for ASWWU?",
+        "If there was one thing you could change about ASWWU, what would it be?"
+    ]
+    try:
+        for i in xrange(1, 18):
+            if i not in [8, 9]:
+                conn.execute("INSERT INTO jobquestions (id, question, jobID) VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
+        conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
+    except IntegrityError:
+        conn.execute(JOB_QUESTION_TABLE.delete())
+        for i in xrange(1, 18):
+            if i not in [8, 9]:
+                conn.execute("INSERT INTO jobquestions (id, question, jobID) VALUES ({}, '{}', {})".format(i, questions[i - 1], 1))
+        conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
     yield job_questions
     conn.execute(JOB_QUESTION_TABLE.delete())

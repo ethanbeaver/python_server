@@ -46,6 +46,7 @@ def peopledb_conn(scope="module"):
     yield conn
     conn.close()
 
+
 @pytest.fixture()
 def jobsdb_conn(scope="module"):
     engine = create_engine(
