@@ -49,6 +49,9 @@ def peopledb_conn(scope="module"):
 
 @pytest.fixture()
 def jobsdb_conn(scope="module"):
+    """
+    Create connection to the jobs database
+    """
     engine = create_engine(
         'sqlite:///databases/jobs.db?check_same_thread=False')
     conn = engine.connect()

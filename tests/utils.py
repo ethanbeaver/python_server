@@ -151,6 +151,9 @@ def askanthingvote(conn, askanythingvotes=None):
 
 
 def gen_job_posting(number=5):
+    """
+    Generator for job postings
+    """
     for i in xrange(2, number + 2):
         yield {
             "id": i,
@@ -164,6 +167,9 @@ def gen_job_posting(number=5):
 
 
 def gen_job_answer(number_answers_per_app=5, num_apps=5):
+    """
+    Generator for job answers
+    """
     for i in xrange(1, number_answers_per_app * num_apps + 2):
         yield {
             "id": i,
@@ -173,6 +179,9 @@ def gen_job_answer(number_answers_per_app=5, num_apps=5):
 
 
 def gen_job_app(number_apps_per_job=5, num_postings=5):
+    """
+    Generator for job applications
+    """
     for i in xrange(1, number_apps_per_job * num_postings + 1):
         yield {
             "id": i,
@@ -183,6 +192,9 @@ def gen_job_app(number_apps_per_job=5, num_postings=5):
 
 
 def gen_job_question(number_questions_per_posting=5, num_postings=5):
+    """
+    Generator for job questions
+    """
     for i in xrange(18, number_questions_per_posting * num_postings + 18):
         yield {
             "id": i,
@@ -193,6 +205,9 @@ def gen_job_question(number_questions_per_posting=5, num_postings=5):
 
 @contextmanager
 def job_application(conn, job_apps=None):
+    """
+    Performs insertion of job applications into database
+    """
     job_apps = job_apps or list(gen_job_app())
 
     try:
@@ -218,6 +233,9 @@ def job_application(conn, job_apps=None):
 
 @contextmanager
 def job_answer(conn, job_answers=None):
+    """
+    Performs insertion of job answers into database
+    """
     job_answers = job_answers or list(gen_job_answer())
 
     try:
@@ -231,6 +249,9 @@ def job_answer(conn, job_answers=None):
 
 @contextmanager
 def job_posting(conn, job_postings=None):
+    """
+    Performs insertion of job postings into database
+    """
     job_postings = job_postings or list(gen_job_posting())
 
     try:
@@ -246,6 +267,9 @@ def job_posting(conn, job_postings=None):
 
 @contextmanager
 def job_question(conn, job_questions=None):
+    """
+    Performs insertion of job questions into database
+    """
     job_questions = job_questions or list(gen_job_question())
     questions = [
         "First Name",
