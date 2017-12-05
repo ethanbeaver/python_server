@@ -168,11 +168,11 @@ def gen_job_answer(number_answers_per_app=5, num_apps=5):
         }
 
 
-def gen_job_app(number=5):
-    for i in xrange(2, number + 2):
+def gen_job_app(number_apps_per_job=5, num_postings=5):
+    for i in xrange(1, number_apps_per_job * num_postings + 1):
         yield {
             "id": i,
-            "jobID": "Job number {}".format(i),
+            "jobID": i % num_postings + 1,
             "username": get_first_name() + '.' + get_last_name(),
             "status": ["new", "reviewed", "hire", "no"][i % 4]
         }
@@ -193,8 +193,20 @@ def job_application(conn, job_apps=None):
 
     try:
         conn.execute(JOB_APPLICATION_TABLE.insert(), job_apps)
+        conn.execute(JOB_APPLICATION_TABLE.insert(), {
+            "id": 0,
+            "jobID": 1,
+            "username": "ryan.rabello",
+            "status": "reviewed"
+        })
     except IntegrityError:
         conn.execute(JOB_APPLICATION_TABLE.delete())
+        conn.execute(JOB_APPLICATION_TABLE.insert(), {
+            "id": 0,
+            "jobID": 1,
+            "username": "ryan.rabello",
+            "status": "reviewed"
+        })
         conn.execute(JOB_APPLICATION_TABLE.insert(), job_apps)
     yield job_apps
     conn.execute(JOB_APPLICATION_TABLE.delete())

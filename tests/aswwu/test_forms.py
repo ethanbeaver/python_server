@@ -26,31 +26,32 @@ def test_view_all_jobs(testing_server, jobsdb_conn):
 
 def test_view_all_applications(testing_server, jobsdb_conn):
     with job_posting(jobsdb_conn, None), job_question(jobsdb_conn, None), job_application(jobsdb_conn, None), job_answer(jobsdb_conn, None):
-        url = "http://127.0.0.1:8888/forms/job/all/all"
+        url = "http://127.0.0.1:8888/forms/application/view/all/all"
         resp = requests.get(url)
         assert (resp.status_code == 200)
-        assert (json.loads(resp.text).length > 1)
+        assert (len(json.loads(resp.text)['applications']) == 26)
 
 
 def test_view_application_one_job(testing_server, jobsdb_conn):
     with job_posting(jobsdb_conn, None), job_question(jobsdb_conn, None), job_application(jobsdb_conn, None), job_answer(jobsdb_conn, None):
-        url = "http://127.0.0.1:8888/forms/job/1/all"
+        url = "http://127.0.0.1:8888/forms/application/view/2/all"
         resp = requests.get(url)
         assert (resp.status_code == 200)
-        assert (json.loads(resp.text).length > 1)
+        assert (len(json.loads(resp.text)['applications']) == 5)
 
 
 def test_view_application_one_user(testing_server, jobsdb_conn):
     with job_posting(jobsdb_conn, None), job_question(jobsdb_conn, None), job_application(jobsdb_conn, None), job_answer(jobsdb_conn, None):
-        url = "http://127.0.0.1:8888/forms/job/all/1"
+        url = "http://127.0.0.1:8888/forms/application/view/all/ryan.rabello"
         resp = requests.get(url)
         assert (resp.status_code == 200)
-        assert (json.loads(resp.text).length > 1)
+        assert (len(json.loads(resp.text)['applications']) == 1)
 
 
 def test_view_individual_application(testing_server, jobsdb_conn):
     with job_posting(jobsdb_conn, None), job_question(jobsdb_conn, None), job_application(jobsdb_conn, None), job_answer(jobsdb_conn, None):
-        url = "http://127.0.0.1:8888/forms/job/1/1"
+        expected_data = {"username": "ryan.rabello", "status": "reviewed", "answers": [], "jobID": "1"}
+        url = "http://127.0.0.1:8888/forms/application/view/1/ryan.rabello"
         resp = requests.get(url)
         assert (resp.status_code == 200)
-        assert (json.loads(resp.text).length > 1)
+        assert (json.loads(resp.text)['application'] == expected_data)
