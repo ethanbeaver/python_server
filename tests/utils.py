@@ -24,7 +24,8 @@ ASKANYTHING_VOTE_TABLE = Table('askanythingvotes', METADATA,
                                    'question_id', String(50), nullable=False),
                                Column('voter', String(75)))
 
-JOB_POSTING_TABLE = Table('jobforms', METADATA,
+JOB_POSTING_TABLE = Table(
+    'jobforms', METADATA,
     Column('id', Integer(), nullable=False),
     Column('job_name', String(100), nullable=False),
     Column('job_description', String(10000)),
@@ -34,20 +35,23 @@ JOB_POSTING_TABLE = Table('jobforms', METADATA,
     Column('image', String(100), nullable=False)
 )
 
-JOB_QUESTION_TABLE = Table('jobquestions', METADATA,
+JOB_QUESTION_TABLE = Table(
+    'jobquestions', METADATA,
     Column('id', Integer(), nullable=False),
     Column('question', String(5000)),
     Column('jobID', String(50), ForeignKey('jobforms.id'))
 )
 
-JOB_APPLICATION_TABLE = Table('jobapplications', METADATA,
+JOB_APPLICATION_TABLE = Table(
+    'jobapplications', METADATA,
     Column('id', Integer(), nullable=False),
     Column('jobID', String(50), ForeignKey('jobforms.id')),
     Column('username', String(100), nullable=False),
     Column('status', String(50))
 )
 
-JOB_ANSWER_TABLE = Table('jobanswers', METADATA,
+JOB_ANSWER_TABLE = Table(
+    'jobanswers', METADATA,
     Column('id', Integer(), nullable=False),
     Column('questionID', String(50), ForeignKey('jobquestions.id')),
     Column('answer', String(10000)),
