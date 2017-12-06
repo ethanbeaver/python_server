@@ -1,9 +1,9 @@
-#!/usr/bin/python2
 """This module contains convenience functions for creating data and inserting it into the databases
    for testing
 """
 from contextlib import contextmanager
 from datetime import datetime
+
 
 from sqlalchemy import Boolean, Column, DateTime, MetaData, String, Table, Integer, ForeignKey
 from sqlalchemy.exc import IntegrityError
