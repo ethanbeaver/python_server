@@ -1,5 +1,5 @@
+"""This module contains tests for the forms(jobs) portion of ASWWU"""
 import json
-"""This module serializes and deserializes json"""
 import requests
 from tests.utils import job_posting, job_question, job_application, job_answer
 
