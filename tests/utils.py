@@ -24,6 +24,7 @@ ASKANYTHING_VOTE_TABLE = Table('askanythingvotes', METADATA,
                                    'question_id', String(50), nullable=False),
                                Column('voter', String(75)))
 
+<<<<<<< HEAD
 JOB_POSTING_TABLE = Table(
     'jobforms', METADATA,
     Column('id', Integer(), nullable=False),
@@ -57,6 +58,18 @@ JOB_ANSWER_TABLE = Table(
     Column('answer', String(10000)),
     Column('applicationID', String(50), ForeignKey('jobapplications.id'))
 )
+=======
+ELECTION_TABLE = Table('elections', METADATA,
+                          Column('id', String(50), nullable=False),
+                          Column('wwuid', String(7), nullable=False),
+                          Column('candidate_one', String(50)),
+                          Column('candidate_two', String(50)),
+                          Column('sm_one', String(50)),
+                          Column('sm_two', String(50)),
+                          Column('new_department', String(150)),
+                          Column('district', String(50)),
+                          Column('updated_at', DateTime))
+>>>>>>> 03cd0a529c6f1282962f4309d6d07d27cab916ea
 
 
 def gen_askanythings(number=5):
@@ -309,3 +322,44 @@ def job_question(conn, job_questions=None):
         conn.execute(JOB_QUESTION_TABLE.insert(), job_questions)
     yield job_questions
     conn.execute(JOB_QUESTION_TABLE.delete())
+
+
+@contextmanager
+def election(conn, elections=None):
+    """Insert list of records into elections table
+
+    Keyword Arguments:
+    conn(conn)               -- A connection object to the database
+    elections(list(dict)) -- Records to be inserted into the db (default None)
+
+    """
+    if elections is None:
+        elections = list(gen_elections())
+
+    conn.execute(ELECTION_TABLE.insert(), elections)
+    yield elections
+    conn.execute(ELECTION_TABLE.delete())
+
+
+def gen_elections(number=5):
+    """Generate elections
+
+    Keyword Arguments:
+    number(int) -- The upper limit of generated records (default 5)
+
+    Yields:
+    dict        -- Record information
+
+    """
+    for i in xrange(number):
+        yield {
+            "id": "{}".format(i),
+            "wwuid": "900000{}".format(i),
+            "candidate_one": "person_A{}".format(i),
+            "candidate_two": "person_B{}".format(i),
+            "sm_one": "person_C{}".format(i),
+            "sm_two": "person_D{}".format(i),
+            "new_department": "department_{}".format(i),
+            "district": "district_{}".format(i),
+            "updated_at": datetime(2000, 1, 1)
+        }
