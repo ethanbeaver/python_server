@@ -24,7 +24,6 @@ ASKANYTHING_VOTE_TABLE = Table('askanythingvotes', METADATA,
                                    'question_id', String(50), nullable=False),
                                Column('voter', String(75)))
 
-<<<<<<< HEAD
 JOB_POSTING_TABLE = Table(
     'jobforms', METADATA,
     Column('id', Integer(), nullable=False),
@@ -58,18 +57,19 @@ JOB_ANSWER_TABLE = Table(
     Column('answer', String(10000)),
     Column('applicationID', String(50), ForeignKey('jobapplications.id'))
 )
-=======
-ELECTION_TABLE = Table('elections', METADATA,
-                          Column('id', String(50), nullable=False),
-                          Column('wwuid', String(7), nullable=False),
-                          Column('candidate_one', String(50)),
-                          Column('candidate_two', String(50)),
-                          Column('sm_one', String(50)),
-                          Column('sm_two', String(50)),
-                          Column('new_department', String(150)),
-                          Column('district', String(50)),
-                          Column('updated_at', DateTime))
->>>>>>> 03cd0a529c6f1282962f4309d6d07d27cab916ea
+
+ELECTION_TABLE = Table(
+    'elections', METADATA,
+    Column('id', String(50), nullable=False),
+    Column('wwuid', String(7), nullable=False),
+    Column('candidate_one', String(50)),
+    Column('candidate_two', String(50)),
+    Column('sm_one', String(50)),
+    Column('sm_two', String(50)),
+    Column('new_department', String(150)),
+    Column('district', String(50)),
+    Column('updated_at', DateTime)
+)
 
 
 def gen_askanythings(number=5):
